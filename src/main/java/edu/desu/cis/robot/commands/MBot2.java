@@ -301,7 +301,7 @@ public class MBot2 {
         if (!result.isSuccessful()){
             return -1;
         }
-        return result.data().get("distance_cm").asInt();
+        return result.data().get("distance_cm").asDouble();
     }
 
     /**
@@ -428,17 +428,14 @@ public class MBot2 {
      * Deregisters a telemetry listener from the robot.
      * @param telemetry The TelemetryListener to deregister.
      */
-    public void deregisterTelemetry(TelemetryListener telemetry){
-        if (telemetry != null){
-            // stop listener
-            telemetry.stop();
-        }
-
+    public void deregisterTelemetry(TelemetryListener telemetry) {
+        if (telemetry == null) return;
+        int port = telemetry.getPort(); // capture before stop
+        telemetry.stop();
         execute("TELEMETRY",
                 Map.of(
                         "action", "DEREGISTER",
-                        "port", telemetry.getPort()
-                )
+                        "port", port)
         );
     }
 

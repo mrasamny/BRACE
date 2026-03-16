@@ -111,24 +111,24 @@ public class SensorCache {
      */
     public SensorSnapshot takeSnapshot() {
         hasNewData = false;                // reset atomically with the read
-        return new SensorSnapshot(distance, lineOffset, lineStatus);
+        return latest;
     }
 
     /**
      * Gets the last known distance from the ultrasonic sensor.
      * @return The distance in centimeters.
      */
-    public double getDistance() { return distance; }
+    public double getDistance() { return latest.distance(); }
     /**
      * Gets the last known offset from the line sensor.
      * @return The line offset.
      */
-    public double getLineOffset() { return lineOffset; }
+    public double getLineOffset() { return latest.lineOffset(); }
     /**
      * Gets the last known status from the line sensor.
      * @return The line status.
      */
-    public int getLineStatus() { return lineStatus; }
+    public int getLineStatus() { return latest.lineStatus(); }
     /**
      * Gets the color of the last detected ball.
      * @return The ball's color as a string.
@@ -156,8 +156,8 @@ public class SensorCache {
     public String toString(){
         String result = "";
         result += "{\n";
-        result += "lineStatus: " + lineStatus + "\n";
-        result += "lineOffset: " + lineOffset + "\n";
+        result += "lineStatus: " + latest.lineStatus() + "\n";
+        result += "lineOffset: " + latest.lineOffset() + "\n";
         result += "color: " + ball.color + "\n";
         return result + "}";
     }

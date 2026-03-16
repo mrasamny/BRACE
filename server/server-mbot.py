@@ -34,7 +34,8 @@ class ResourceArbiter:
         self.lock = _thread.allocate_lock()
         self.resources = {}
 
-    def acquire(self, resource, owner, priority=0, blocking=True):
+    def acquire(self, resource, owner, priority=0, blocking=True, timeout=5.0):
+        deadline = time.time() + timeout
         while True:
             with self.lock:
                 r = self.resources.get(resource)
@@ -44,7 +45,7 @@ class ResourceArbiter:
                         "priority": priority
                     }
                     return True
-            if not blocking:
+            if not blocking or time.time() > deadline:
                 return False
             time.sleep(0.01)
 
@@ -73,7 +74,8 @@ class PubSubBroker:
             self.subscribers.setdefault(topic, []).append(fn)
 
     def publish(self, topic, msg):
-        subs = self.subscribers.get(topic, [])
+        with self.lock:
+            subs = list(self.subscribers.get(topic, []))
         for fn in subs:
             try:
                 fn(msg)
@@ -98,7 +100,7 @@ class TelemetryStreamer:
         _thread.start_new_thread(self.loop, ())
 
     def stop(self):
-        cyberpi.console.print("Stoping telemetry...\n")
+        cyberpi.console.print("Stopping telemetry...\n")
         if arbiter.acquire("camera", "telemetry", 100, False):
             try:
                 mbuild.smart_camera.close_light()
@@ -501,7 +503,11 @@ def read_sensor(parameters):
     if sensor == "IMU":
         if arbiter.acquire("imu", "CMD", 20):
             try:
-                return {"yaw": 10.2, "pitch": 0.5, "roll": 0.1}
+                return {
+                    "yaw":   cyberpi.get_yaw(),
+                    "pitch": cyberpi.get_pitch(),
+                    "roll":  cyberpi.get_roll()
+                }
             finally:
                 arbiter.release("imu", "CMD")
 
@@ -626,10 +632,11 @@ def handle_turn(payload):
 def move_and_turn(speed, t=0, diff=20, is_left=True):
     em1_speed = speed
     em2_speed = -speed
-    if is_left:
-        em1_speed -= (abs(em1_speed) / em1_speed) * diff
-    else:
-        em2_speed -= (abs(em2_speed) / em2_speed) * diff
+    if speed != 0:
+        if is_left:
+            em1_speed -= (abs(em1_speed) / em1_speed) * diff
+        else:
+            em2_speed -= (abs(em2_speed) / em2_speed) * diff
     mbot2.drive_speed(em1_speed, em2_speed)
     if t > 0:
         time.sleep(t)

@@ -66,6 +66,7 @@ Before connecting, the Java host broadcasts a `DISCOVER` message on all network 
 ```json
 {
   "type": "DISCOVERY",
+   "id": "<UUID>",
   "payload": {
     "action": "DISCOVER",
     "robot": "StingBot"

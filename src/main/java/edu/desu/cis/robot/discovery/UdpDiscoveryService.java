@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.UUID;
 
 /**
  * An implementation of the {@link RobotDiscovery} interface that uses UDP broadcast
@@ -33,12 +34,13 @@ public class UdpDiscoveryService implements RobotDiscovery {
         String msg = """
         {
           "type": "DISCOVERY",
+          "id": ""%s",
           "payload": {
             "action": "DISCOVER",
             "robot": "%s"
           }
         }
-        """.formatted(robotId);
+        """.formatted(UUID.randomUUID().toString(),robotId);
 
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
 
