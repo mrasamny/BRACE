@@ -9,6 +9,8 @@ import _thread
 
 
 # --- Configuration ---
+WIFI_SSID = "mbots"
+WIFI_PASSWORD = "pemacs-mbots"
 ROBOT_ID = "StingBot"
 DISCOVERY_PORT = 9998
 COMMAND_PORT = 9990
@@ -767,7 +769,7 @@ def learn_colors():
 # Startup
 # ============================================================
 
-cyberpi.wifi.connect("mbots", "pemacs-mbots")
+cyberpi.wifi.connect(WIFI_SSID, WIFI_PASSWORD)
 cyberpi.display.show_label("connecting to wifi...", 12, "center")
 while not cyberpi.wifi.is_connect():
     time.sleep(0.1)
