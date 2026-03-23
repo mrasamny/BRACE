@@ -444,13 +444,6 @@ public class MBot2 {
     //==============================================
 
     /**
-     * Commands the robot to start following a line.
-     */
-    public void followLine() {
-        execute("FOLLOW_LINE", null);
-    }
-
-    /**
      * Commands the robot to enable its anti-crashing behavior.
      * @param thresholdInCm The distance threshold in centimeters to avoid a crash.
      */
@@ -463,32 +456,10 @@ public class MBot2 {
     }
 
     /**
-     * Commands the robot to execute its object avoidance routine.
-     */
-    public void avoidObject() {
-        execute("AVOID_OBJECT", null);
-    }
-
-    /**
-     * Commands the robot to execute its object moving routine.
-     */
-    public void moveObject() {
-        execute("MOVE_OBJECT", null);
-    }
-    
-    /**
      * Commands the robot to stop when a line is detected.
      */
     public void stopAtLine() {
         execute("STOP_AT_LINE", null);
-    }
-
-
-    /**
-     * Commands the robot to execute its sample collection routine.
-     */
-    public void collectSample() {
-        execute("COLLECT_SAMPLE", null);
     }
 
     /**
