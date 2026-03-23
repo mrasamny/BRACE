@@ -34,7 +34,7 @@ public class UdpDiscoveryService implements RobotDiscovery {
         String msg = """
         {
           "type": "DISCOVERY",
-          "id": ""%s",
+          "id": "%s",
           "payload": {
             "action": "DISCOVER",
             "robot": "%s"
